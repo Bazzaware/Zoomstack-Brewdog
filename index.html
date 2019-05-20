@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Where is your Brewdog? 🍺🐕 using OS Open Zoomstack</title>
+    <title></title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
@@ -13,16 +13,163 @@
 </head>
 <body>
 
+<style>
+#map {
+    position: fixed;
+    width:65%;
+}
+#features {
+    width: 35%;
+    margin-left: 65%;
+    font-family: Arial;
+    overflow-y: scroll;
+    background-color: #0e1b29;
+}
+section {
+    padding:  25px 50px;
+    line-height: 25px;
+    border-bottom: 1px solid #23a8d3;
+    opacity: 0.25;
+    font-size: 20px;
+}
+section.active {
+    opacity: 0.75;
+}
+section:last-child {
+    border-bottom: none;
+    margin-bottom: 1000px;
+}
+    .mapboxgl-popup {
+        max-width: 400px;
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    }
+</style>
+
 <div id='map'></div>
+<div id='features'>
+    <section id='welcome' class='active'>
+        <font color="#01cfff"><h3>Brewdog locations</h3><br>
+        <img src="https://github.com/egil1978/egil1978.github.io/blob/master/brewdog2.png?raw=true" style="width:40%;height:40%;"><br>
+    </section>
+  
+    <section id='section1'>
+        <font color="#01cfff"><h4>1. Aberdeen</h4></font>
+        <img src="https://www.brewdog.com/media/aheadworks/store_locator/28/image/Flagship_outside_2.jpg" style="width:70%;height:70%;"><br>
+        <h6>In 2010, BrewDog opened their first bar in the owners home town of Aberdeen, 3 years after starting the company.</h6>
+    </section>
+  
+  <section id='section2'>
+      <font color="#01cfff"><h4>2. Glasgow & Edinburgh</h4></font>
+        <h6>In 2011 BrewDog opened bars in Glasgow, Edinburgh, and a flagship London venue in Camden. In this year BrewDog also welcomed 5,000 new shareholders and raised £2.2m to continue growing their business.</h6>
+    </section>
+    
+    <section id='section3'>
+        <font color="#01cfff"><h4>3. Ellon</h4></font>
+        <img src="https://www.brewdog.com/media/gene-cms/e/l/ellon_1.jpg" style="width:70%;height:70%;"><br>
+        <h6>In 2012 they opened up a world class eco-brewery in Ellon which allowed them to grow revenues by 95%. In this year they also opened 6 new UK bars and launched Dead Pony Club.</h6>
+    </section>
+    
+    <section id='section4'>
+        <font color="#01cfff"><h4>4. York</h4></font>
+        <img src="https://www.brewdog.com/media/aheadworks/store_locator/103/image/brewdog-york.jpg" style="width:70%;height:70%;"><br>
+        <h6>In 2016, Elvis Juice was born! BrewDog also opened 9 new bars from Berlin to York.</h6>
+    </section>
+    
+    <section id='section5'>
+        <font color="#01cfff"><h4>5. Clerkenwell</h4></font>
+        <img src="https://www.brewdog.com/media/aheadworks/store_locator/118/image/Hero_Clerkenwell_compressed_.jpg" style="width:70%;height:70%;"><br>
+        <h6>BrewDog now have 9 bars in London, including one in Clerkenwell, just around the corner from the Geovation Hub. Once you’re thirsty from map making, it’s a great place to grab a nice pint!</h6>
+    </section>
+        
+        <section id='section6'>
+        <img src="https://snodnipper.github.io/os-zoomstack-masterclass/brand/ordnance_survey_white.png" style="width:40%;height:40%;"><br>
+         <font size="1">Contains OS data © Crown copyright and database rights 2018</font>
+    </section>
+    
+  </div>
 <script>
 mapboxgl.accessToken = '';
 var map = new mapboxgl.Map({
-    container: 'map', // container id
-    style: 'https://snodnipper.github.io/brewdog-map/style.json', // stylesheet location
-    center: [-1.25, 52.2], // starting position [lng, lat]
-    zoom: 6 // starting zoom
-});
+    container: 'map',
+    style: 'https://snodnipper.github.io/brewdog-map/style.json',
+        maxZoom: 16,
+        bearing: 0,
+        center: [-3.276136, 54.831588],
+        zoom: 6,
+        speed: 0.5,
+        pitch: 0
+    });
+    
+  var chapters = {
+    'welcome': {
+        bearing: 0,
+        center: [-3.276136, 54.831588],
+        zoom: 5.93,
+        speed: 0.5,
+        pitch: 0
+    },
+    'section1': {
+        bearing: 0,
+        center: [-2.091948, 57.147483],
+        speed: 0.5,
+        zoom: 13,
+        pitch: 0
+    },
+    'section2': {
+        center: [-3.769885, 55.915518],
+        bearing: 0,
+        zoom: 8,
+        speed: 0.5,
+        pitch: 0
+    },
+    'section3': {
+        bearing: 0,
+        center: [-2.054593, 57.370377],
+        zoom: 13,
+        speed: 0.5,
+        pitch: 0
+    },
+    'section4': {
+        bearing: 0,
+        center: [-1.091226, 53.955371],
+        zoom: 13,
+        speed: 0.5,
+        pitch: 0
+    },
+    'section5': {
+        bearing: 0,
+        center: [-0.103039, 51.522837],
+        zoom: 14,
+        pitch: 60,
+        speed: 0.5
+    },
+};
+// On every scroll event, check which element is on screen
+window.onscroll = function() {
+    var chapterNames = Object.keys(chapters);
+    for (var i = 0; i < chapterNames.length; i++) {
+        var chapterName = chapterNames[i];
+        if (isElementOnScreen(chapterName)) {
+            setActiveChapter(chapterName);
+            break;
+        }
+    }
+};
+var activeChapterName = 'baker';
+function setActiveChapter(chapterName) {
+    if (chapterName === activeChapterName) return;
+    map.flyTo(chapters[chapterName]);
+    document.getElementById(chapterName).setAttribute('class', 'active');
+    if (document.getElementById(activeChapterName) != null) {
+      document.getElementById(activeChapterName).setAttribute('class', '');
+    }
+    activeChapterName = chapterName;
+}
+function isElementOnScreen(id) {
+    var element = document.getElementById(id);
+    var bounds = element.getBoundingClientRect();
+    return bounds.top < window.innerHeight && bounds.bottom > 0;
+}
 </script>
-
 </body>
 </html>
